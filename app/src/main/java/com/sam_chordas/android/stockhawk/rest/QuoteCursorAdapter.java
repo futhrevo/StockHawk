@@ -28,10 +28,13 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
   private static Context mContext;
   private static Typeface robotoLight;
+  final private View mEmptyView;
   private boolean isPercent;
-  public QuoteCursorAdapter(Context context, Cursor cursor){
+
+  public QuoteCursorAdapter(Context context, Cursor cursor, View emptyView){
     super(context, cursor);
     mContext = context;
+    mEmptyView = emptyView;
   }
 
   @Override
@@ -47,6 +50,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
   public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor){
     viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex("symbol")));
     viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex("bid_price")));
+    mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
     int sdk = Build.VERSION.SDK_INT;
     if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1){
       if (sdk < Build.VERSION_CODES.JELLY_BEAN){
@@ -70,6 +74,13 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     } else{
       viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("change")));
     }
+  }
+
+  @Override
+  public Cursor swapCursor(Cursor newCursor) {
+    Cursor cursor = super.swapCursor(newCursor);
+    mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
+    return cursor;
   }
 
   @Override public void onItemDismiss(int position) {

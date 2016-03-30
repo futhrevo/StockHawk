@@ -78,18 +78,19 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    View emptyView = findViewById(R.id.recyclerview_stocks_empty);
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
-    mCursorAdapter = new QuoteCursorAdapter(this, null);
+    mCursorAdapter = new QuoteCursorAdapter(this, null, emptyView);
     recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
-              @Override public void onItemClick(View v, int position) {
+              @Override
+              public void onItemClick(View v, int position) {
                 //TODO:
                 // do something on item click
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
-
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.attachToRecyclerView(recyclerView);
@@ -222,5 +223,11 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onLoaderReset(Loader<Cursor> loader){
     mCursorAdapter.swapCursor(null);
   }
+
+  /*
+  Updates the empty recycler view with contextually relevant information that the user can
+  use to determine why they aren't seeing portfolio.
+  */
+
 
 }
