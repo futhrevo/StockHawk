@@ -23,6 +23,7 @@ public class Utils {
     private static String LOG_TAG = Utils.class.getSimpleName();
 
     public static boolean showPercent = true;
+    public static int FETCHING_STATUS = 100;
 
     public static ArrayList quoteJsonToContentVals(final Context context,String JSON){
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();

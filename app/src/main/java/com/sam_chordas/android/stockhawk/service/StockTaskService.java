@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v4.os.ResultReceiver;
 import android.util.Log;
+
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
@@ -16,6 +19,7 @@ import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -32,11 +36,17 @@ public class StockTaskService extends GcmTaskService{
   private Context mContext;
   private StringBuilder mStoredSymbols = new StringBuilder();
   private boolean isUpdate;
+  private ResultReceiver resultReceiver;
 
   public StockTaskService(){}
 
   public StockTaskService(Context context){
     mContext = context;
+  }
+
+  public StockTaskService(Context context, ResultReceiver receiver){
+    mContext = context;
+    resultReceiver = receiver;
   }
   String fetchData(String url) throws IOException{
     Request request = new Request.Builder()
@@ -109,6 +119,7 @@ public class StockTaskService extends GcmTaskService{
     int result = GcmNetworkManager.RESULT_FAILURE;
 
     if (urlStringBuilder != null){
+      sendProgress(101);
       urlString = urlStringBuilder.toString();
 
       try{
@@ -135,4 +146,17 @@ public class StockTaskService extends GcmTaskService{
     return result;
   }
 
+  private void sendProgress(int code){
+    // data that will be send into ResultReceiver
+    try {
+      Bundle data = new Bundle();
+      data.putInt("progressCode", code);
+
+      // here you are sending progress into ResultReceiver located in your Activity
+      resultReceiver.send(Utils.FETCHING_STATUS, data);
+    }catch (NullPointerException e){
+      e.printStackTrace();
+    }
+
+  }
 }

@@ -1,5 +1,6 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -8,19 +9,28 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.os.ResultReceiver;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.PeriodicTask;
+import com.google.android.gms.gcm.Task;
+import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
@@ -29,10 +39,6 @@ import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
-import com.google.android.gms.gcm.Task;
-import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -52,6 +58,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Context mContext;
   private Cursor mCursor;
   boolean isConnected;
+  private ProgressBar progressBar;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +71,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     isConnected = activeNetwork != null &&
         activeNetwork.isConnectedOrConnecting();
     setContentView(R.layout.activity_my_stocks);
+    progressBar = (ProgressBar) findViewById(R.id.progressBar);
     // The intent service is for executing immediate pulls from the Yahoo API
     // GCMTaskService can only schedule tasks, they cannot execute immediately
     mServiceIntent = new Intent(this, StockIntentService.class);
+    mServiceIntent.putExtra("receiver", new ProgressReceiver(new Handler()));
     if (savedInstanceState == null){
       // Run the initialize task service so that some stocks appear upon an empty database
       mServiceIntent.putExtra("tag", "init");
       if (isConnected){
+        progressBar.setVisibility(View.VISIBLE);
         startService(mServiceIntent);
       } else{
         networkToast();
@@ -87,7 +97,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               @Override
               public void onItemClick(View v, int position) {
                 //TODO:
+                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                 // do something on item click
+                startActivity(intent);
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
@@ -118,6 +130,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     // Add the stock to DB
                     mServiceIntent.putExtra("tag", "add");
                     mServiceIntent.putExtra("symbol", input.toString());
+                    mServiceIntent.putExtra("receiver", new ProgressReceiver(new Handler()));
+                    progressBar.setVisibility(View.VISIBLE);
                     startService(mServiceIntent);
                   }
                 }
@@ -229,5 +243,35 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   use to determine why they aren't seeing portfolio.
   */
 
+  /* class to hide progressbar when Taskservice completes fetching data
+  http://stackoverflow.com/questions/20266178/show-progressbar-or-dialog-from-an-intentservice-for-download-progress
+  */
+  @SuppressLint("ParcelCreator")
+  private class ProgressReceiver extends ResultReceiver{
+
+    /**
+     * Create a new ResultReceive to receive results.  Your
+     * {@link #onReceiveResult} method will be called from the thread running
+     * <var>handler</var> if given, or from an arbitrary thread if null.
+     *
+     * @param handler
+     */
+    public ProgressReceiver(Handler handler) {
+      super(handler);
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle resultData) {
+      super.onReceiveResult(resultCode, resultData);
+
+      if(resultCode == Utils.FETCHING_STATUS){
+        int code = resultData.getInt("progressCode");
+        Log.i("progress code: ", String.valueOf(code));
+        progressBar.setVisibility(View.INVISIBLE);
+      }
+    }
+
+
+  }
 
 }
