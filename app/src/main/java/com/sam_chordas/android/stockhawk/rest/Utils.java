@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
@@ -46,7 +47,7 @@ public class Utils {
                             @Override
                             public void run() {
                                 try {
-                                    Toast.makeText(context, "No symbol found with name " + finalJsonObject.getString("symbol").toUpperCase(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, context.getString(R.string.symbol_404) + finalJsonObject.getString("symbol").toUpperCase(), Toast.LENGTH_LONG).show();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -107,6 +108,7 @@ public class Utils {
                     jsonObject.getString("ChangeinPercent"), true));
             builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
             builder.withValue(QuoteColumns.ISCURRENT, 1);
+            builder.withValue(QuoteColumns.NAME, jsonObject.getString("Name"));
             if (change.charAt(0) == '-'){
                 builder.withValue(QuoteColumns.ISUP, 0);
             }else{

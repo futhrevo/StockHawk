@@ -1,15 +1,16 @@
 package com.sam_chordas.android.stockhawk.ui;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.db.chart.model.LineSet;
 import com.db.chart.view.LineChartView;
 import com.db.chart.view.Tooltip;
 import com.sam_chordas.android.stockhawk.R;
 
-public class DetailActivity extends Activity {
+public class DetailActivity extends AppCompatActivity {
 
     private LineChartView mChart;
     private final String[] mLabels= {"Jan", "Fev", "Mar", "Apr", "Jun", "May", "Jul", "Aug", "Sep"};
@@ -22,6 +23,10 @@ public class DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_graph);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mChart = (LineChartView) findViewById(R.id.linechart);
 
         // Data

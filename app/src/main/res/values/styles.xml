@@ -2,9 +2,11 @@
 
   <!-- Base application theme. -->
   <style name="AppTheme"
-      parent="Theme.AppCompat">
+      parent="Theme.AppCompat.NoActionBar">
       <item name="colorPrimary">@color/material_blue_500</item>
       <item name="colorPrimaryDark">@color/material_blue_700</item>
+      <item name="colorAccent">@color/material_accent</item>
+      <item name="android:windowBackground">@color/black</item>
     <!-- Customize your theme here. -->
   </style>
 
@@ -13,12 +15,15 @@
     <item name="android:textColor">#FFF</item>
     <item name="android:textStyle">bold</item>
   </style>
+
   <style name="BidPriceTextStyle">
     <item name="android:textSize">20sp</item>
   </style>
+
   <style name="StockSymbolTextStyle">
     <item name="android:textSize">25sp</item>
     <item name="android:textAllCaps">true</item>
   </style>
+
 
 </resources>

@@ -10,5 +10,7 @@
     <string name="input_hint">FB</string>
     <string name="input_prefill"></string>
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
-    <string name="empty_recyclerview_message">There are no symbols added. Go ahead and add a stock symbol by pressing button on bottom right</string>
+    <string name="empty_recyclerview_message">There are no symbols added. Go ahead and add a stock symbol by pressing \" + \" button </string>
+    <string name="symbol_exists">This stock is already saved!</string>
+    <string name="symbol_404">"No symbol found with name "</string>
 </resources>
