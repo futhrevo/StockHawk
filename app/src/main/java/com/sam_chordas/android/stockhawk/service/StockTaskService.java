@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -31,6 +32,7 @@ import java.net.URLEncoder;
  */
 public class StockTaskService extends GcmTaskService{
   private String LOG_TAG = StockTaskService.class.getSimpleName();
+  public static final String ACTION_DATA_UPDATED = "com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED";
 
   private OkHttpClient client = new OkHttpClient();
   private Context mContext;
@@ -119,11 +121,11 @@ public class StockTaskService extends GcmTaskService{
     int result = GcmNetworkManager.RESULT_FAILURE;
 
     if (urlStringBuilder != null){
-      sendProgress(101);
-      urlString = urlStringBuilder.toString();
 
+      urlString = urlStringBuilder.toString();
       try{
         getResponse = fetchData(urlString);
+        sendProgress(101);
         result = GcmNetworkManager.RESULT_SUCCESS;
         try {
           ContentValues contentValues = new ContentValues();
@@ -135,6 +137,9 @@ public class StockTaskService extends GcmTaskService{
           }
           mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
               Utils.quoteJsonToContentVals(mContext ,getResponse));
+
+          Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED).setPackage(mContext.getPackageName());
+          mContext.sendBroadcast(dataUpdatedIntent);
         }catch (RemoteException | OperationApplicationException e){
           Log.e(LOG_TAG, "Error applying batch insert", e);
         }

@@ -13,4 +13,12 @@
     <string name="empty_recyclerview_message">There are no symbols added. Go ahead and add a stock symbol by pressing \" + \" button </string>
     <string name="symbol_exists">This stock is already saved!</string>
     <string name="symbol_404">"No symbol found with name "</string>
+    <string name="past_week_trend">Past week trend</string>
+    <string name="weekly_trend_textview">Weekly Trend in USD</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Select Stock Symbol</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_symbol_list">No symbols added in app</string>
+    <string name="title_widget_list">Stock Quote List</string>
+    <string name="title_widget_quote">Stock Quote</string>
 </resources>

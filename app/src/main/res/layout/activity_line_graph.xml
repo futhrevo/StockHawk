@@ -17,11 +17,23 @@
             />
     </android.support.design.widget.AppBarLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:text="@string/weekly_trend_textview"/>
     <com.db.chart.view.LineChartView
         xmlns:chart="http://schemas.android.com/apk/res-auto"
         android:id="@+id/linechart"
+        android:layout_marginTop="25dp"
+        android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         chart:layout_scrollFlags="scroll|enterAlways"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        chart:chart_labelColor = "@android:color/white"
+        android:gravity="center_horizontal"
+        android:minHeight="20dp" />
 </android.support.design.widget.CoordinatorLayout>

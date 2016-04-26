@@ -3,11 +3,12 @@
   <!-- Base application theme. -->
   <style name="AppTheme"
       parent="Theme.AppCompat.NoActionBar">
-      <item name="colorPrimary">@color/material_blue_500</item>
-      <item name="colorPrimaryDark">@color/material_blue_700</item>
-      <item name="colorAccent">@color/material_accent</item>
-      <item name="android:windowBackground">@color/black</item>
-    <!-- Customize your theme here. -->
+      <!--<item name="colorPrimary">@color/material_blue_500</item>-->
+      <!--<item name="colorPrimaryDark">@color/material_blue_700</item>-->
+      <!--<item name="colorAccent">@color/material_accent</item>-->
+      <!--<item name="android:windowBackground">@color/material_background</item>-->
+      <!--<item name="android:colorBackground">@color/material_background</item>-->
+      <!-- Customize your theme here. -->
   </style>
 
   <style name="PercentChangeTextStyle">

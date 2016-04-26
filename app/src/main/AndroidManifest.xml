@@ -26,14 +26,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.DetailActivity"
+        <activity
+            android:name=".ui.DetailActivity"
             android:label="@string/app_name"
             android:parentActivityName=".ui.MyStocksActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MyStocksActivity" />
         </activity>
+
         <service
             android:name=".service.StockTaskService"
             android:exported="true"
@@ -47,9 +48,52 @@
         <provider
             android:name=".data.generated.QuoteProvider"
             android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
+            android:exported="true" />
+        <provider
+            android:name=".data.generated.HistoryProvider"
+            android:authorities="com.sam_chordas.android.stockhawk.data.HistoryProvider"
             android:exported="false" />
 
+        <service
+            android:name=".service.HistoryIntentService"
+            android:exported="false" />
 
+        <receiver android:name=".widget.StockHawkWidgetProvider" android:label="@string/title_widget_quote">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stock_hawk_widget_info" />
+        </receiver>
+
+        <activity android:name=".widget.StockHawkWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".widget.StockHawkWidgetIntentService"
+            android:exported="false" />
+
+        <receiver android:name=".widget.StockHawkListWidgetProvider" android:enabled="true" android:label="@string/title_widget_list">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stock_hawk_list_widget_provider_info" />
+        </receiver>
+
+        <service android:name=".widget.WidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

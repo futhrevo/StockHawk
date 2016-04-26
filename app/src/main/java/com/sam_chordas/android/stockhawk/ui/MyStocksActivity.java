@@ -7,8 +7,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -44,7 +42,7 @@ import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
-
+    private final String LOG_TAG = MyStocksActivity.class.getSimpleName();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -67,12 +65,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         super.onCreate(savedInstanceState);
         Stetho.initializeWithDefaults(this);
         mContext = this;
-        ConnectivityManager cm =
-                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
+        isConnected = Utils.isNetworkAvailable(mContext);
         setContentView(R.layout.mystocksactivity);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -92,7 +86,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 networkToast();
             }
         }
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         View emptyView = findViewById(R.id.recyclerview_stocks_empty);
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
@@ -102,8 +96,18 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        //TODO:
+                        mCursor.moveToPosition(position);
+
+                        String selectedSymbol = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
+                        String selectedname = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.NAME));
+                        mCursor.close();
                         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                        final Bundle bundle = new Bundle();
+                        bundle.putString(Utils.INTENT_EXTRA_SYMBOL,
+                                selectedSymbol);
+                        bundle.putString(Utils.INTENT_EXTRA_NAME, selectedname);
+                        intent.putExtras(bundle);
+//                        intent.putExtra(Utils.INTENT_EXTRA_SYMBOL, selectedSymbol).putExtra(Utils.INTENT_EXTRA_NAME, selectedname);
                         // do something on item click
                         startActivity(intent);
                     }
@@ -127,8 +131,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                         // in the DB and proceed accordingly
                                         Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                                                 new String[] { QuoteColumns.SYMBOL }, QuoteColumns.SYMBOL + "= ?",
-                                                new String[] { input.toString() }, null);
+                                                new String[] { input.toString().toUpperCase() }, null);
                                         if (c.getCount() != 0) {
+                                            c.close();
                                             Toast toast =
                                                     Toast.makeText(MyStocksActivity.this, getString(R.string.symbol_exists),
                                                             Toast.LENGTH_LONG);
@@ -138,7 +143,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                         } else {
                                             // Add the stock to DB
                                             mServiceIntent.putExtra("tag", "add");
-                                            mServiceIntent.putExtra("symbol", input.toString());
+                                            mServiceIntent.putExtra("symbol", input.toString().toUpperCase());
                                             mServiceIntent.putExtra("receiver", new ProgressReceiver(new Handler()));
                                             progressBar.setVisibility(View.VISIBLE);
                                             startService(mServiceIntent);
@@ -157,6 +162,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
+
 
         mTitle = getTitle();
         if (isConnected){
@@ -192,8 +198,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
 
     public void restoreActionBar() {
-//    ActionBar actionBar = ;
-//    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.main_collapsing);
@@ -278,7 +282,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
             if(resultCode == Utils.FETCHING_STATUS){
                 int code = resultData.getInt("progressCode");
-                Log.i("progress code: ", String.valueOf(code));
+                Log.i(LOG_TAG, "progress code: " + String.valueOf(code));
                 progressBar.setVisibility(View.INVISIBLE);
             }
         }

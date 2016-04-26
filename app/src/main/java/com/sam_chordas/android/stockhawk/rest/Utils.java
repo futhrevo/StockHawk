@@ -2,6 +2,8 @@ package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.ContentProviderOperation;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,7 +27,27 @@ public class Utils {
 
     public static boolean showPercent = true;
     public static int FETCHING_STATUS = 100;
+    public static final String INTENT_EXTRA_SYMBOL = "Symbol";
+    public static final String INTENT_EXTRA_NAME = "Name";
 
+    public static String historyJsonToContentVals(final Context context, String JSON){
+        ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
+        JSONObject jsonObject = null;
+        JSONArray resultsArray = null;
+
+        try {
+            jsonObject = new JSONObject(JSON);
+            if (jsonObject != null && jsonObject.length() != 0){
+                jsonObject = jsonObject.getJSONObject("query");
+                int count = Integer.parseInt(jsonObject.getString("count"));
+                resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return resultsArray.toString();
+    }
     public static ArrayList quoteJsonToContentVals(final Context context,String JSON){
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
         JSONObject jsonObject = null;
@@ -119,5 +141,20 @@ public class Utils {
             e.printStackTrace();
         }
         return builder.build();
+    }
+
+    /**
+     * Returns true if the network is available or about to become available.
+     *
+     * @param c Context used to get the ConnectivityManager
+     * @return true if the network is available
+     */
+    static public boolean isNetworkAvailable(Context c) {
+        ConnectivityManager cm =
+                (ConnectivityManager)c.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }
