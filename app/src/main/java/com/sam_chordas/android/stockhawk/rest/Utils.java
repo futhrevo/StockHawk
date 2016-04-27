@@ -103,6 +103,9 @@ public class Utils {
     }
 
     public static String truncateChange(String change, boolean isPercentChange){
+        if(change == null){
+            return "null";
+        }
         String weight = change.substring(0,1);
         String ampersand = "";
         if (isPercentChange){

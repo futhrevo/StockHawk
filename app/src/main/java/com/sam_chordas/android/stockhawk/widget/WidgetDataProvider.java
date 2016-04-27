@@ -19,6 +19,7 @@ import com.sam_chordas.android.stockhawk.rest.Utils;
  */
 @SuppressLint("NewApi")
 public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory {
+    private final String LOG_TAG = WidgetDataProvider.class.getSimpleName();
     private Context mContext;
     private Cursor mCursor;
     private int mAppWidgetId;
@@ -77,8 +78,11 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         RemoteViews mView = new RemoteViews(mContext.getPackageName(),
                 R.layout.stock_hawk_list_widget_item);
         mView.setTextViewText(R.id.widget_list_stock_symbol, symbol);
+        mView.setCharSequence(R.id.widget_list_stock_symbol, "setContentDescription", mContext.getString(R.string.a11y_symbol, name));
         mView.setTextViewText(R.id.widget_list_bid_price,bidprice);
+        mView.setCharSequence(R.id.widget_list_bid_price, "setContentDescription", mContext.getString(R.string.a11y_bid_price, bidprice));
         mView.setTextViewText(R.id.widget_list_change, change);
+        mView.setCharSequence(R.id.widget_list_change, "setContentDescription", mContext.getString(R.string.a11y_percent_change, change));
 
         char first = change.charAt(0);
         if(first == '-'){

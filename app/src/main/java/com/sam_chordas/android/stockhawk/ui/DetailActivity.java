@@ -10,7 +10,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.db.chart.model.LineSet;
 import com.db.chart.view.LineChartView;
@@ -44,25 +43,15 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         String name = null;
         Intent intent = getIntent();
-        Log.i(LOG_TAG, intent.toString());
         try{
             Bundle b =  intent.getExtras();
             if(b != null && b.containsKey(Utils.INTENT_EXTRA_SYMBOL)){
                 mSymbol = getIntent().getExtras().getString(Utils.INTENT_EXTRA_SYMBOL);
                 name = getIntent().getExtras().getString(Utils.INTENT_EXTRA_NAME);
-            }else{
-                final Intent originalIntent = (Intent) intent.getExtras().get( Intent.EXTRA_INTENT );
-                Log.i(LOG_TAG, originalIntent.toString());
-                mSymbol = originalIntent.getStringExtra(Utils.INTENT_EXTRA_SYMBOL);
-                name = originalIntent.getStringExtra(Utils.INTENT_EXTRA_NAME);
-
             }
         }catch (NullPointerException e){
             e.printStackTrace();
         }
-
-//
-//        final String extra = originalIntent.getStringExtra("SomeExtra");
 
 
         addOneoffTask();
@@ -95,8 +84,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data.getCount() > 0){
-            data.moveToFirst();
+        if(data != null && data.moveToFirst()){
             try {
                 JSONArray jsonArray = new JSONArray(data.getString(data.getColumnIndex(HistoryColumns.HISTORICAL_DATA)));
                 int length = jsonArray.length();
@@ -105,8 +93,14 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 if(jsonArray != null && length !=0){
                     for(int i=0; i < jsonArray.length(); i++){
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        xaxis[length-1 -i] = jsonObject.getString("Date");
-                        yaxis[length-1 -i] = (float) jsonObject.getDouble("High");
+                        int index = length-1 -i;
+                        if(index % 2 == 0){
+                            xaxis[index] = jsonObject.getString("Date");
+                        }else{
+                            xaxis[index] = "\u2022";
+                        }
+
+                        yaxis[index] = (float) jsonObject.getDouble("High");
                     }
 
                     // Data

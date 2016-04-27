@@ -32,6 +32,7 @@
                 android:src="@drawable/stockexchange"
                 app:layout_collapseMode="parallax"
                 android:tint="@color/material_blue_tint"
+                android:contentDescription="@null"
                 />
             <android.support.v7.widget.Toolbar
                 android:id="@+id/main.toolbar"
@@ -53,7 +54,7 @@
         app:layout_anchor="@id/main.appbar"
         app:layout_anchorGravity="bottom|right|end"
         android:visibility="invisible"
-        />
+        android:contentDescription="@string/cd_fetching_stock_info" />
 
     <TextView
         android:id="@+id/recyclerview_stocks_empty"
@@ -83,5 +84,5 @@
         android:src="@drawable/ic_add_white_24dp"
         app:layout_anchor="@id/main.appbar"
         app:layout_anchorGravity="bottom|right|end"
-        />
+        android:contentDescription="@string/cd_add_a_stock_symbol" />
 </android.support.design.widget.CoordinatorLayout>

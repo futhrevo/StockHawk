@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -74,11 +73,14 @@ public class StockHawkWidgetIntentService extends IntentService {
 
             RemoteViews views = new RemoteViews(getPackageName(), layoutId);
             if (data == null) {
+                views.setTextViewText(R.id.widget_item_symbol, this.getString(R.string.empty_symbol_list));
+
                 return;
             }
 
             if (!data.moveToFirst()) {
                 data.close();
+                views.setTextViewText(R.id.widget_item_symbol, this.getString(R.string.empty_symbol_list));
                 return;
             }
             String bidprice = data.getString(INDEX_BIDPRICE);
@@ -91,8 +93,11 @@ public class StockHawkWidgetIntentService extends IntentService {
 
             // Add the data to the RemoteViews
             views.setTextViewText(R.id.widget_item_symbol, symbol);
+            views.setContentDescription(R.id.widget_item_symbol, this.getString(R.string.a11y_symbol, name));
             views.setTextViewText(R.id.widget_bid_price, bidprice);
+            views.setContentDescription(R.id.widget_bid_price, this.getString(R.string.a11y_bid_price, bidprice));
             views.setTextViewText(R.id.widget_change, change);
+            views.setContentDescription(R.id.widget_change, this.getString(R.string.a11y_percent_change, change));
 
             char first = change.charAt(0);
             if(first == '-'){
@@ -108,7 +113,6 @@ public class StockHawkWidgetIntentService extends IntentService {
                 intentBundle.putString(Utils.INTENT_EXTRA_SYMBOL,
                         symbol);
                 intentBundle.putString(Utils.INTENT_EXTRA_NAME, name);
-                Log.i(LOG_TAG, symbol +" --- -"+ bidprice +" --- -"+ change +" --- -"+ name);
             }
 
             launchIntent.putExtras(intentBundle);

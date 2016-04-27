@@ -63,7 +63,6 @@ public class HistoryIntentService extends IntentService {
             }
 
             String urlString = urlStringBuilder.toString();
-            Log.i(LOG_TAG, urlString);
             String getResponse;
             try {
                 getResponse  = fetchData(urlString);

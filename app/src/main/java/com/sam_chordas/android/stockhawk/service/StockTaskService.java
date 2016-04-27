@@ -24,6 +24,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 
 /**
  * Created by sam_chordas on 9/30/15.
@@ -54,9 +55,15 @@ public class StockTaskService extends GcmTaskService{
     Request request = new Request.Builder()
         .url(url)
         .build();
+    try {
+      Response response = client.newCall(request).execute();
+      return response.body().string();
+    }catch (UnknownHostException e){
+      Log.i(LOG_TAG, "unknown host");
+      e.printStackTrace();
+    }
 
-    Response response = client.newCall(request).execute();
-    return response.body().string();
+    return null;
   }
 
   @Override
@@ -125,6 +132,9 @@ public class StockTaskService extends GcmTaskService{
       urlString = urlStringBuilder.toString();
       try{
         getResponse = fetchData(urlString);
+        if(getResponse == null){
+          return result;
+        }
         sendProgress(101);
         result = GcmNetworkManager.RESULT_SUCCESS;
         try {
@@ -158,7 +168,9 @@ public class StockTaskService extends GcmTaskService{
       data.putInt("progressCode", code);
 
       // here you are sending progress into ResultReceiver located in your Activity
-      resultReceiver.send(Utils.FETCHING_STATUS, data);
+      if(resultReceiver != null){
+        resultReceiver.send(Utils.FETCHING_STATUS, data);
+      }
     }catch (NullPointerException e){
       e.printStackTrace();
     }

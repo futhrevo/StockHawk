@@ -35,5 +35,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         chart:chart_labelColor = "@android:color/white"
         android:gravity="center_horizontal"
-        android:minHeight="20dp" />
+        android:minHeight="20dp"
+        android:contentDescription="Weekly Trend in USD" />
 </android.support.design.widget.CoordinatorLayout>

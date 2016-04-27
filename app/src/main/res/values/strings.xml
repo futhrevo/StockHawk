@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Stock Hawk</string>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+    <string name="app_name" translatable="false">Stock Hawk</string>
 
     <string name="action_example">Example action</string>
 
@@ -7,18 +7,32 @@
     <string name="action_change_units">Change Units</string>
     <string name="symbol_search">Symbol Search</string>
     <string name="content_test">Search for a Stock Symbol</string>
-    <string name="input_hint">FB</string>
-    <string name="input_prefill"></string>
+    <string name="input_hint" translatable="false">FB</string>
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
     <string name="empty_recyclerview_message">There are no symbols added. Go ahead and add a stock symbol by pressing \" + \" button </string>
     <string name="symbol_exists">This stock is already saved!</string>
     <string name="symbol_404">"No symbol found with name "</string>
     <string name="past_week_trend">Past week trend</string>
-    <string name="weekly_trend_textview">Weekly Trend in USD</string>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="weekly_trend_textview">Weekly Trend in $</string>
     <string name="configure">Select Stock Symbol</string>
     <string name="add_widget">Add widget</string>
     <string name="empty_symbol_list">No symbols added in app</string>
     <string name="title_widget_list">Stock Quote List</string>
     <string name="title_widget_quote">Stock Quote</string>
+    <string name="cd_fetching_stock_info">Fetching stock info</string>
+    <string name="cd_add_a_stock_symbol">Add a stock symbol</string>
+
+    <string name="a11y_symbol">
+        <xliff:g id="symbol"> %1$s</xliff:g> is at
+    </string>
+    <string name="a11y_bid_price" translatable="false">
+        <xliff:g id="bid_price"> %1$s $</xliff:g>
+    </string>
+    <string name="a11y_percent_change">
+        changed by <xliff:g id="percent_change"> %1$s</xliff:g>
+    </string>
+    <string name="a11y_change">
+        changed by <xliff:g id="change"> %1$s $</xliff:g>
+    </string>
+    <string name="input_prefill" translatable="false" />
 </resources>

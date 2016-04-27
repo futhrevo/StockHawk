@@ -17,7 +17,9 @@
             android:background="#ee4b595e"
             android:orientation="horizontal"
             android:paddingLeft="5dp"
-            android:paddingRight="5dp" >
+            android:paddingStart="5dp"
+            android:paddingRight="5dp"
+            android:paddingEnd="5dp">
 
             <LinearLayout
                 android:id="@+id/widgetTopBar"
@@ -27,6 +29,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"
+                android:paddingStart="8dp"
                 android:paddingTop="4dp" >
 
                 <TextView

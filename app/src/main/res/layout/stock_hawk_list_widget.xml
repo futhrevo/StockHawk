@@ -43,9 +43,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/empty_symbol_list"
             android:id="@+id/widget_empty"
-            android:layout_gravity="center"
             android:fontFamily="sans-serif-condensed"
-            android:layout_margin="8dp" />
+            android:layout_margin="8dp"
+            android:layout_gravity="center" />
     </FrameLayout>
 
 </RelativeLayout>
