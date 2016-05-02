@@ -5,10 +5,10 @@
     android:layout_height="72dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingLeft="16dp"
-    android:paddingStart="16dp"
-    android:paddingRight="16dp"
-    android:paddingEnd="16dp"
+    android:paddingLeft="@dimen/padding_default"
+    android:paddingStart="@dimen/padding_default"
+    android:paddingRight="@dimen/padding_default"
+    android:paddingEnd="@dimen/padding_default"
     >
   <TextView
       android:id="@+id/stock_symbol"
